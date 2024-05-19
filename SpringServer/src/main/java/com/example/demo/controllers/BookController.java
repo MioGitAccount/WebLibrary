@@ -19,28 +19,32 @@ public class BookController {
         this.service = service;
     }
 
+    @CrossOrigin
     @GetMapping("")
     public List<Book> findAll(){
         return service.findAll();
     }
 
+    @CrossOrigin
     @GetMapping("/{id}")
     public Book findById(@PathVariable Integer id){
         return service.findById(id);
     }
 
+    @CrossOrigin
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("")
-
     public void create(@RequestBody Book book){
         service.save(book);
     }
 
+    @CrossOrigin
     @PutMapping("/{id}")
     public void update(@RequestBody Book book,@PathVariable Integer id){
         service.update(book,id);
 
     }
+    @CrossOrigin
     @DeleteMapping("/{id}")
     public void delete(){
         //to do
