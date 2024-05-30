@@ -1,19 +1,25 @@
 package com.example.demo.Model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import org.hibernate.annotations.Generated;
 
 @Entity
 public class Book
 {
         //+auto generated
+
         @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
         Integer id;
         String title;
         String decs;
         String author;
         Category category;
         Integer releaseYear;
+        String coverPageImageName;
 
         public Book() {
 
@@ -74,5 +80,12 @@ public class Book
 
         public void setReleaseYear(Integer releaseYear) {
                 this.releaseYear = releaseYear;
+        }
+        public String getCoverPageImageName() {
+                return coverPageImageName;
+        }
+
+        public void setCoverPageImageName(String coverPageImageName) {
+                this.coverPageImageName = coverPageImageName;
         }
 }

@@ -1,10 +1,15 @@
 package com.example.demo.controllers;
 
 import com.example.demo.Model.Book;
+import com.example.demo.Model.Category;
 import com.example.demo.Services.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -19,6 +24,7 @@ public class BookController {
         this.service = service;
     }
 
+    //TO DO: RETURN ResponseEntity<String>
     @CrossOrigin
     @GetMapping("")
     public List<Book> findAll(){
@@ -28,14 +34,30 @@ public class BookController {
     @CrossOrigin
     @GetMapping("/{id}")
     public Book findById(@PathVariable Integer id){
-        return service.findById(id);
+        Book book = service.findById(id);
+        book.setCoverPageImageName("/api/book/view/"+ book.getCoverPageImageName());
+        return book;
+
     }
 
     @CrossOrigin
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("")
-    public void create(@RequestBody Book book){
-        service.save(book);
+    public void create(@RequestParam("title") String title,
+                       @RequestParam("desc") String desc,
+                       @RequestParam("author") String author,
+                       @RequestParam("category") Category category,
+                       @RequestParam("releaseYear") Integer releaseYear,
+                       @RequestParam("image") MultipartFile imageFile
+                       ){
+
+        Book book = new Book();
+        book.setTitle(title);
+        book.setDecs(desc);
+        book.setAuthor(author);
+        book.setCategory(category);
+        book.setReleaseYear(releaseYear);
+        service.save(book,imageFile);
     }
 
     @CrossOrigin
@@ -49,4 +71,13 @@ public class BookController {
     public void delete(){
         //to do
     }
+    @GetMapping("/view/{filename:.+}")
+    @ResponseBody
+    public ResponseEntity<Resource> viewImage(@PathVariable String filename){
+        Resource resource = service.getImage(filename);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
+    }
+
 }
