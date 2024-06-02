@@ -6,32 +6,44 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import org.hibernate.annotations.Generated;
 
+import java.util.List;
+import java.util.Set;
+
 @Entity
 public class Book
 {
+        //izdavach, broj strana,
         //+auto generated
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         Integer id;
         String title;
-        String decs;
+        String description;
         String author;
-        Category category;
+        Set<Category> category;
         Integer releaseYear;
+        String publisher;
+        Integer bookSize;
         String coverPageImageName;
+        String pdfFileName;
+
+
 
         public Book() {
 
         }
-
-        public Book(Integer id, String title, String decs, String author, Category category, Integer releaseYear) {
+        public Book(Integer id, String title, String description, String author, Set<Category> category, Integer releaseYear,String pdfFileName,
+        String publisher, Integer bookSize) {
                 this.id = id;
                 this.title = title;
-                this.decs = decs;
+                this.description = description;
                 this.author = author;
                 this.category = category;
                 this.releaseYear = releaseYear;
+                this.pdfFileName = pdfFileName;
+                this.publisher = publisher;
+                this.bookSize = bookSize;
         }
 
         public Integer getId() {
@@ -50,12 +62,12 @@ public class Book
                 this.title = title;
         }
 
-        public String getDecs() {
-                return decs;
+        public String getDesc() {
+                return description;
         }
 
-        public void setDecs(String decs) {
-                this.decs = decs;
+        public void setDesc(String description) {
+                this.description = description;
         }
 
         public String getAuthor() {
@@ -66,11 +78,11 @@ public class Book
                 this.author = author;
         }
 
-        public Category getCategory() {
+        public Set<Category> getCategory() {
                 return category;
         }
 
-        public void setCategory(Category category) {
+        public void setCategory(Set<Category> category) {
                 this.category = category;
         }
 
@@ -88,4 +100,31 @@ public class Book
         public void setCoverPageImageName(String coverPageImageName) {
                 this.coverPageImageName = coverPageImageName;
         }
+        public String getPdfFileName() {
+                return pdfFileName;
+        }
+
+        public void setPdfFileName(String pdfFileName) {
+                this.pdfFileName = pdfFileName;
+        }
+
+        public String getPublisher() {
+                return publisher;
+        }
+
+        public void setPublisher(String publisher) {
+                this.publisher = publisher;
+        }
+
+        public Integer getBookSize() {
+                return bookSize;
+        }
+
+        public void setBookSize(Integer bookSize) {
+                this.bookSize = bookSize;
+        }
+
+
+
+
 }

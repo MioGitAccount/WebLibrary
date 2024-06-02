@@ -15,8 +15,10 @@ import java.util.List;
 
 @Service
 public class BookService {
-    @Value("${upload.dir}")
-    private String uploadDir;
+    @Value("${upload.dir.img}")
+    private String uploadDirImg;
+    @Value("${upload.dir.pdf}")
+    private String uploadDirPdf;
 
     private final BookRepository bookRepository;
     private final ImageRepository imageRepository;
@@ -35,10 +37,15 @@ public class BookService {
         return bookRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Book not found"));
     }
 
-    public void save(Book book, MultipartFile imageFile){
+    public void save(Book book, MultipartFile imageFile, MultipartFile pdfFile){
         if (imageFile != null && !imageFile.isEmpty()){
-            imageRepository.saveImage(imageFile,uploadDir);
+            imageRepository.saveImage(imageFile,uploadDirImg);
             book.setCoverPageImageName(imageFile.getOriginalFilename());
+        }
+        if (pdfFile != null && !pdfFile.isEmpty()){
+            imageRepository.saveImage(pdfFile,uploadDirPdf);
+            book.setPdfFileName(pdfFile.getOriginalFilename());
+            book.setBookSize(100);
         }
 
         bookRepository.save(book);
@@ -51,6 +58,9 @@ public class BookService {
     }
 
     public Resource getImage(String filename) {
-        return imageRepository.getImage(filename, uploadDir);
+        return imageRepository.getImage(filename, uploadDirImg);
+    }
+    public Resource getPdf(String filename) {
+        return imageRepository.getImage(filename, uploadDirPdf);
     }
 }

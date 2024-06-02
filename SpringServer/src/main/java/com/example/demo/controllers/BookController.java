@@ -12,7 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/book")
@@ -29,7 +32,15 @@ public class BookController {
     @CrossOrigin
     @GetMapping("")
     public List<Book> findAll(){
-        return service.findAll();
+
+        List<Book> listOfBooks = service.findAll();
+        for(Book book : listOfBooks) {
+            book.setCoverPageImageName("/api/book/view/" + book.getCoverPageImageName());
+            book.setPdfFileName("/api/book/pdf/" + book.getPdfFileName());
+        }
+        return listOfBooks;
+
+
     }
 
     @CrossOrigin
@@ -37,6 +48,7 @@ public class BookController {
     public Book findById(@PathVariable Integer id){
         Book book = service.findById(id);
         book.setCoverPageImageName("/api/book/view/"+ book.getCoverPageImageName());
+        book.setPdfFileName("/api/book/pdf/"+ book.getPdfFileName());
         return book;
 
     }
@@ -45,20 +57,27 @@ public class BookController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("")
     public void create(@RequestParam("title") String title,
-                       @RequestParam("desc") String desc,
+                       @RequestParam("description") String desc,
                        @RequestParam("author") String author,
-                       @RequestParam("category") Category category,
+                       @RequestParam("category") String category,
                        @RequestParam("releaseYear") Integer releaseYear,
-                       @RequestParam("image") MultipartFile imageFile
+                       @RequestParam("publisher") String publisher,
+                       @RequestParam("image") MultipartFile imageFile,
+                       @RequestParam("pdf") MultipartFile pdfFile
                        ){
+
+        Set<Category> categorySet = Arrays.stream(category.split(","))
+                .map(Category::valueOf)
+                .collect(Collectors.toSet());
 
         Book book = new Book();
         book.setTitle(title);
-        book.setDecs(desc);
+        book.setDesc(desc);
         book.setAuthor(author);
-        book.setCategory(category);
+        book.setCategory(categorySet);
         book.setReleaseYear(releaseYear);
-        service.save(book,imageFile);
+        book.setPublisher(publisher);
+        service.save(book,imageFile,pdfFile);
     }
 
     @CrossOrigin
@@ -72,12 +91,27 @@ public class BookController {
     public void delete(){
         //to do
     }
+    @CrossOrigin
     @GetMapping("/view/{filename:.+}")
     @ResponseBody
     public ResponseEntity<Resource> viewImage(@PathVariable String filename){
         Resource resource = service.getImage(filename);
 
+        if(resource == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+
         return ResponseEntity.ok().contentType(MediaType.parseMediaType("image/jpeg"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
+    }
+    @CrossOrigin
+    @GetMapping("/pdf/{filename:.+}")
+    @ResponseBody
+    public ResponseEntity<Resource> viewPdf(@PathVariable String filename){
+        Resource resource = service.getPdf(filename);
+
+        if(resource == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType("application/pdf"))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
     }
