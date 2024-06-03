@@ -1,26 +1,25 @@
 package com.example.demo.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import org.hibernate.annotations.Generated;
+import jakarta.persistence.*;
 
-import java.util.List;
 import java.util.Set;
 
 @Entity
 public class Book
 {
-        //izdavach, broj strana,
-        //+auto generated
-
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         Integer id;
         String title;
         String description;
         String author;
+
+        @ManyToMany
+        @JoinTable(
+                name = "book_categories",
+                joinColumns = @JoinColumn(name = "book_id"),
+                inverseJoinColumns = @JoinColumn(name = "category_id")
+        )
         Set<Category> category;
         Integer releaseYear;
         String publisher;
@@ -33,8 +32,8 @@ public class Book
         public Book() {
 
         }
-        public Book(Integer id, String title, String description, String author, Set<Category> category, Integer releaseYear,String pdfFileName,
-        String publisher, Integer bookSize) {
+        public Book(Integer id, String title, String description, String author, Set<Category> category, Integer releaseYear, String pdfFileName,
+                    String publisher, Integer bookSize) {
                 this.id = id;
                 this.title = title;
                 this.description = description;

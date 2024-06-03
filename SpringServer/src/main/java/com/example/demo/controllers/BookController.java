@@ -2,6 +2,7 @@ package com.example.demo.controllers;
 
 import com.example.demo.Model.Book;
 import com.example.demo.Model.Category;
+import com.example.demo.Model.CategoryName;
 import com.example.demo.Services.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -59,17 +60,16 @@ public class BookController {
     public void create(@RequestParam("title") String title,
                        @RequestParam("description") String desc,
                        @RequestParam("author") String author,
-                       @RequestParam("category") String category,
+                       @RequestParam("category") Set<String> category,
                        @RequestParam("releaseYear") Integer releaseYear,
                        @RequestParam("publisher") String publisher,
                        @RequestParam("image") MultipartFile imageFile,
                        @RequestParam("pdf") MultipartFile pdfFile
                        ){
 
-        Set<Category> categorySet = Arrays.stream(category.split(","))
-                .map(Category::valueOf)
+        Set<Category> categorySet = category.stream()
+                .map(name -> service.getCategoryByName(CategoryName.valueOf(name)))
                 .collect(Collectors.toSet());
-
         Book book = new Book();
         book.setTitle(title);
         book.setDesc(desc);

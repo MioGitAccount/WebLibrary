@@ -1,0 +1,32 @@
+package com.example.demo.Model;
+
+public enum CategoryName {
+    Fiction,
+    Literature,
+    Romance,
+    Biography_and_Autobiography,
+    Thriller,
+    Mystery,
+    Humor,
+    Fantasy,
+    Historical_Fiction,
+    Comic_and_Graphic_Books,
+    History,
+    Sociology,
+    Business,
+    Politics,
+    Cooking_Food,
+    Psychology,
+    Family_Relationships,
+    Science,
+    Health_Fitness,
+    Mythology,
+    Performing_Arts,
+    Horror,
+    Religion,
+    Short_Stories,
+    Science_Fiction,
+    Sports_Recreations,
+    Crime,
+    Poetry
+}
