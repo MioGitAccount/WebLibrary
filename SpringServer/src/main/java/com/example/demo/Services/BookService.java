@@ -79,4 +79,8 @@ public class BookService {
     public Category getCategoryByName(CategoryName name) {
         return categoryRepository.findByName(name);
     }
+    public Set<CategoryName> getAllCategoryNames()
+    {
+        return categoryRepository.findAll().stream().map(Category::getName).collect(Collectors.toSet());
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import com.example.demo.DTO.BookDTO;
 import com.example.demo.Model.Book;
 import com.example.demo.Model.Category;
 import com.example.demo.Model.CategoryName;
@@ -32,25 +33,14 @@ public class BookController {
     //TO DO: RETURN ResponseEntity<String>
     @CrossOrigin
     @GetMapping("")
-    public List<Book> findAll(){
-
-        List<Book> listOfBooks = service.findAll();
-        for(Book book : listOfBooks) {
-            book.setCoverPageImageName("/api/book/view/" + book.getCoverPageImageName());
-            book.setPdfFileName("/api/book/pdf/" + book.getPdfFileName());
-        }
-        return listOfBooks;
-
-
+    public List<BookDTO> findAll(){
+        return service.findAll().stream().map(book -> new BookDTO(book,"/api/book/view/","/api/book/pdf/")).collect(Collectors.toList());
     }
 
     @CrossOrigin
     @GetMapping("/{id}")
-    public Book findById(@PathVariable Integer id){
-        Book book = service.findById(id);
-        book.setCoverPageImageName("/api/book/view/"+ book.getCoverPageImageName());
-        book.setPdfFileName("/api/book/pdf/"+ book.getPdfFileName());
-        return book;
+    public BookDTO findById(@PathVariable Integer id){
+        return new BookDTO(service.findById(id),"/api/book/view/","/api/book/pdf/");
 
     }
 
@@ -114,6 +104,12 @@ public class BookController {
         return ResponseEntity.ok().contentType(MediaType.parseMediaType("application/pdf"))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
+    }
+    @CrossOrigin
+    @GetMapping("/categories")
+    @ResponseBody
+    public Set<CategoryName> findAllCategories(){
+        return service.getAllCategoryNames();
     }
 
 }

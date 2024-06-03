@@ -32,7 +32,7 @@ public class Book
         public Book() {
 
         }
-        public Book(Integer id, String title, String description, String author, Set<Category> category, Integer releaseYear, String pdfFileName,
+        public Book(Integer id, String title, String description, String author, Set<Category> category, Integer releaseYear, String coverPageImageName,String pdfFileName,
                     String publisher, Integer bookSize) {
                 this.id = id;
                 this.title = title;
@@ -40,6 +40,20 @@ public class Book
                 this.author = author;
                 this.category = category;
                 this.releaseYear = releaseYear;
+                this.coverPageImageName = coverPageImageName;
+                this.pdfFileName = pdfFileName;
+                this.publisher = publisher;
+                this.bookSize = bookSize;
+        }
+        //without id
+        public Book(String title, String description, String author, Set<Category> category,Integer releaseYear,String coverPageImageName, String pdfFileName,
+                    String publisher, Integer bookSize) {
+                this.title = title;
+                this.description = description;
+                this.author = author;
+                this.category = category;
+                this.releaseYear = releaseYear;
+                this.coverPageImageName = coverPageImageName;
                 this.pdfFileName = pdfFileName;
                 this.publisher = publisher;
                 this.bookSize = bookSize;
