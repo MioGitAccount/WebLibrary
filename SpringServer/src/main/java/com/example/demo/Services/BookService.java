@@ -6,9 +6,13 @@ import com.example.demo.Model.CategoryName;
 import com.example.demo.repository.BookRepository;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.ImageRepository;
+import com.example.demo.repository.Specification.BookSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,8 +40,8 @@ public class BookService {
         this.categoryRepository = categoryRepository;
     }
 
-    public List<Book> findAll() {
-        return bookRepository.findAll();
+    public Page<Book> findAll(Specification<Book> specification, Pageable pageable) {
+        return bookRepository.findAll(specification,pageable);
     }
 
     public Book findById(Integer id) {

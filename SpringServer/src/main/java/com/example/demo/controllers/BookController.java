@@ -5,8 +5,15 @@ import com.example.demo.Model.Book;
 import com.example.demo.Model.Category;
 import com.example.demo.Model.CategoryName;
 import com.example.demo.Services.BookService;
+import com.example.demo.repository.Specification.BookSpecification;
+import com.example.demo.repository.Specification.Utils.PaginationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,8 +40,28 @@ public class BookController {
     //TO DO: RETURN ResponseEntity<String>
     @CrossOrigin
     @GetMapping("")
-    public List<BookDTO> findAll(){
-        return service.findAll().stream().map(book -> new BookDTO(book,"/api/book/view/","/api/book/pdf/")).collect(Collectors.toList());
+    public Page<BookDTO> findAll(@RequestParam(required = false) String title,
+                                 @RequestParam(required = false) String author,
+                                 @RequestParam(required = false) Set<String> categories,
+                                 @RequestParam(required = false) Integer releaseYear,
+                                 @RequestParam(required = false) String publisher,
+                                 @RequestParam(defaultValue = "0") int page,
+                                 @RequestParam(defaultValue = "10") int size,
+                                 @RequestParam(defaultValue = "id,asc") String[] sort){
+        Set<Category> categorySet = categories == null ? null :
+                categories.stream().map(CategoryName::valueOf).map(cat ->service.getCategoryByName(cat)).collect(Collectors.toSet());
+        Specification<Book> specification = Specification
+                .where(BookSpecification.hasTitle(title))
+                .and(BookSpecification.hasAuthor(author))
+                .and(BookSpecification.hasCategory(categorySet))
+                .and(BookSpecification.hasReleaseYear(releaseYear))
+                .and(BookSpecification.hasPublisher(publisher));
+
+        Sort sortOrder = Sort.by(Sort.Order.by(sort[0]).with(Sort.Direction.fromString(sort[1])));
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
+
+
+        return PaginationUtils.listToPage(service.findAll(specification,pageable).stream().map(book -> new BookDTO(book,"/api/book/view/","/api/book/pdf/")).collect(Collectors.toList()),pageable);
     }
 
     @CrossOrigin
