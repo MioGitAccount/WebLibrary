@@ -2,6 +2,7 @@ package com.example.demo.Model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 @Entity
@@ -26,14 +27,15 @@ public class Book
         Integer bookSize;
         String coverPageImageName;
         String pdfFileName;
-
+        LocalDate dateAdded;
+        String language;
 
 
         public Book() {
 
         }
         public Book(Integer id, String title, String description, String author, Set<Category> category, Integer releaseYear, String coverPageImageName,String pdfFileName,
-                    String publisher, Integer bookSize) {
+                    String publisher, Integer bookSize, LocalDate dateAdded, String language) {
                 this.id = id;
                 this.title = title;
                 this.description = description;
@@ -44,10 +46,12 @@ public class Book
                 this.pdfFileName = pdfFileName;
                 this.publisher = publisher;
                 this.bookSize = bookSize;
+                this.dateAdded = dateAdded;
+                this.language = language;
         }
         //without id
         public Book(String title, String description, String author, Set<Category> category,Integer releaseYear,String coverPageImageName, String pdfFileName,
-                    String publisher, Integer bookSize) {
+                    String publisher, Integer bookSize,LocalDate dateAdded, String language) {
                 this.title = title;
                 this.description = description;
                 this.author = author;
@@ -57,6 +61,8 @@ public class Book
                 this.pdfFileName = pdfFileName;
                 this.publisher = publisher;
                 this.bookSize = bookSize;
+                this.dateAdded = dateAdded;
+                this.language = language;
         }
 
         public Integer getId() {
@@ -135,6 +141,29 @@ public class Book
 
         public void setBookSize(Integer bookSize) {
                 this.bookSize = bookSize;
+        }
+        public String getDescription() {
+                return description;
+        }
+
+        public void setDescription(String description) {
+                this.description = description;
+        }
+
+        public LocalDate getDateAdded() {
+                return dateAdded;
+        }
+
+        public void setDateAdded(LocalDate dateAdded) {
+                this.dateAdded = dateAdded;
+        }
+
+        public String getLanguage() {
+                return language;
+        }
+
+        public void setLanguage(String language) {
+                this.language = language;
         }
 
 

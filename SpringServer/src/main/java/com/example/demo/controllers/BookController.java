@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -45,6 +46,8 @@ public class BookController {
                                  @RequestParam(required = false) Set<String> categories,
                                  @RequestParam(required = false) Integer releaseYear,
                                  @RequestParam(required = false) String publisher,
+                                 @RequestParam(required = false) LocalDate dateAdded,
+                                 @RequestParam(required = false) String language,
                                  @RequestParam(defaultValue = "0") int page,
                                  @RequestParam(defaultValue = "10") int size,
                                  @RequestParam(defaultValue = "id,asc") String[] sort){
@@ -55,7 +58,9 @@ public class BookController {
                 .and(BookSpecification.hasAuthor(author))
                 .and(BookSpecification.hasCategory(categorySet))
                 .and(BookSpecification.hasReleaseYear(releaseYear))
-                .and(BookSpecification.hasPublisher(publisher));
+                .and(BookSpecification.hasPublisher(publisher))
+                .and(BookSpecification.afterDate(dateAdded))
+                .and(BookSpecification.hasLanguage(language));
 
         Sort sortOrder = Sort.by(Sort.Order.by(sort[0]).with(Sort.Direction.fromString(sort[1])));
         Pageable pageable = PageRequest.of(page, size, sortOrder);
@@ -77,14 +82,15 @@ public class BookController {
     public void create(@RequestParam("title") String title,
                        @RequestParam("description") String desc,
                        @RequestParam("author") String author,
-                       @RequestParam("category") Set<String> category,
+                       @RequestParam("category") Set<String> categories,
                        @RequestParam("releaseYear") Integer releaseYear,
                        @RequestParam("publisher") String publisher,
+                       @RequestParam("language") String language,
                        @RequestParam("image") MultipartFile imageFile,
                        @RequestParam("pdf") MultipartFile pdfFile
                        ){
 
-        Set<Category> categorySet = category.stream()
+        Set<Category> categorySet = categories.stream()
                 .map(name -> service.getCategoryByName(CategoryName.valueOf(name)))
                 .collect(Collectors.toSet());
         Book book = new Book();
@@ -94,6 +100,8 @@ public class BookController {
         book.setCategory(categorySet);
         book.setReleaseYear(releaseYear);
         book.setPublisher(publisher);
+        book.setLanguage(language);
+        book.setDateAdded(LocalDate.now());
         service.save(book,imageFile,pdfFile);
     }
 

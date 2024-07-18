@@ -3,6 +3,8 @@ package com.example.demo.DTO;
 import com.example.demo.Model.Book;
 import com.example.demo.Model.Category;
 import com.example.demo.Model.CategoryName;
+
+import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -17,6 +19,8 @@ public class BookDTO {
     Integer bookSize;
     String coverPageImageName;
     String pdfFileName;
+    LocalDate dateAdded;
+    String language;
 
 
     public BookDTO() {
@@ -34,6 +38,8 @@ public class BookDTO {
         this.pdfFileName = pdfRoot + book.getPdfFileName();
         this.publisher = book.getPublisher();
         this.bookSize = book.getBookSize();
+        this.dateAdded = book.getDateAdded();
+        this.language = book.getLanguage();
 
     }
 
@@ -115,5 +121,21 @@ public class BookDTO {
 
     public void setPdfFileName(String pdfFileName) {
         this.pdfFileName = pdfFileName;
+    }
+
+    public LocalDate getDateAdded() {
+        return dateAdded;
+    }
+
+    public void setDateAdded(LocalDate dateAdded) {
+        this.dateAdded = dateAdded;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 }
